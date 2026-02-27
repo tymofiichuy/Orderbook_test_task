@@ -21,11 +21,11 @@ public:
 };
 
 struct buy_cmp{
-    bool operator()(order_key l, order_key r) const;
+    bool operator()(order_key& l, order_key& r) const;
 };
 
 struct sell_cmp{
-    bool operator()(order_key l, order_key r) const;
+    bool operator()(order_key& l, order_key& r) const;
 };
 
 class order_amount{
