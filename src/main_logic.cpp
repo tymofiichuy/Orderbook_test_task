@@ -52,41 +52,40 @@ uint64_t order_amount::fulfill(uint64_t proposal){
     return anw;
 }
 
-bool orderbook::insert(order_key& key, order_amount& amount, bool side){
+bool orderbook::insert_buy_order(order_key& key, order_amount& amount){
     uint64_t anw;
-    if(side){
-        while((!sell_list.empty())&&key.buy_match(sell_list.begin()->first)){
-            anw = sell_list.begin()->second.fulfill(amount.get_amount());
-            amount.fulfill(anw);
+    while((!sell_list.empty())&&key.buy_match(sell_list.begin()->first)){
+        anw = sell_list.begin()->second.fulfill(amount.get_amount());
+        amount.fulfill(anw);
 
-            if(sell_list.begin()->second.get_amount() == 0){
-                sell_list.erase(sell_list.begin());
-            }            
-            if(amount.get_amount() == 0){
-                return true;
-            }
+        if(sell_list.begin()->second.get_amount() == 0){
+            sell_list.erase(sell_list.begin());
+        }            
+        if(amount.get_amount() == 0){
+            return true;
         }
-        if(amount.get_amount() != 0){
-            return buy_list.emplace(key, amount).second;
-        }
-        return false;
     }
-
-    else{
-        while((!buy_list.empty())&&key.sell_match(buy_list.begin()->first)){
-            anw = buy_list.begin()->second.fulfill(amount.get_amount());
-            amount.fulfill(anw);
-
-            if(buy_list.begin()->second.get_amount() == 0){
-                buy_list.erase(buy_list.begin());
-            }
-            if(amount.get_amount() == 0){
-                return true;
-            }
-        }
-        if(amount.get_amount() != 0){
-            return sell_list.emplace(key, amount).second;
-        }
-        return false;     
+    if(amount.get_amount() != 0){
+        return buy_list.emplace(key, amount).second;
     }
+    return false;
+}
+
+bool orderbook::insert_sell_order(order_key& key, order_amount& amount){
+    uint64_t anw;
+    while((!buy_list.empty())&&key.sell_match(buy_list.begin()->first)){
+        anw = buy_list.begin()->second.fulfill(amount.get_amount());
+        amount.fulfill(anw);
+
+        if(buy_list.begin()->second.get_amount() == 0){
+            buy_list.erase(buy_list.begin());
+        }
+        if(amount.get_amount() == 0){
+            return true;
+        }
+    }
+    if(amount.get_amount() != 0){
+        return sell_list.emplace(key, amount).second;
+    }
+    return false;
 }

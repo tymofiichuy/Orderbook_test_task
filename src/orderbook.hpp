@@ -44,6 +44,6 @@ private:
     std::map<order_key, order_amount, buy_cmp> buy_list;
     std::map<order_key, order_amount, sell_cmp> sell_list;
 public:
-    //side = true if an order to insert is a buy order
-    bool insert(order_key&, order_amount&, bool side);
+    bool insert_buy_order(order_key&, order_amount&);
+    bool insert_sell_order(order_key&, order_amount&);
 };
