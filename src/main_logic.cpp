@@ -19,11 +19,11 @@ time_t order_key::get_timestamp() const{
 }
 
 bool order_key::buy_match(const order_key& cmp){
-    return price_ > cmp.get_price();
+    return price_ >= cmp.get_price();
 }
 
 bool order_key::sell_match(const order_key& cmp){
-    return price_ < cmp.get_price();
+    return price_ <= cmp.get_price();
 }
 
 bool buy_cmp::operator()(const order_key& l,const order_key& r) const{
@@ -106,7 +106,7 @@ uint64_t order_amount::fulfill(uint64_t proposal){
 //     return false;
 // }
 
-bool orderbook::insert_buy_order(pair<order_key, order_amount>& md_pair){
+bool orderbook::insert_buy_order(pair<order_key, order_amount> md_pair){
     uint64_t anw;
     while((!sell_list.empty())&&md_pair.first.buy_match(sell_list.begin()->first)){
         anw = sell_list.begin()->second.fulfill(md_pair.second.get_amount());
@@ -131,8 +131,8 @@ bool orderbook::insert_buy_order(pair<order_key, order_amount>& md_pair){
     return false;
 }
 
-bool orderbook::insert_sell_order(pair<order_key, order_amount>& md_pair){
-    uint64_t anw;
+bool orderbook::insert_sell_order(pair<order_key, order_amount> md_pair){
+    uint64_t anw = 0;
     while((!buy_list.empty())&&md_pair.first.sell_match(buy_list.begin()->first)){
         anw = buy_list.begin()->second.fulfill(md_pair.second.get_amount());
         md_pair.second.fulfill(anw);
@@ -158,13 +158,13 @@ bool orderbook::insert_sell_order(pair<order_key, order_amount>& md_pair){
 
 bool orderbook::insert_via_cli(std::string md_str){
     if(!cli.tokenize(md_str)){
-        throw invalid_argument("Unable to read");
+        throw invalid_argument("Unable to read\n");
     };
 
     if(cli.read_side()){
-        insert_buy_order(cli.read_order_model());
+        return insert_buy_order(cli.read_order_model());
     }
     else{
-        insert_sell_order(cli.read_order_model());
+        return insert_sell_order(cli.read_order_model());
     }
 };
