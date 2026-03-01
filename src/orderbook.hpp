@@ -15,6 +15,7 @@ private:
     uint64_t price_;
     std::time_t timestamp;
 public:
+    uint64_t get_user_id() const;
     uint64_t get_price() const;
     std::time_t get_timestamp() const;
 
@@ -43,15 +44,6 @@ public:
     order_amount(uint64_t amount);
 };
 
-class orderbook{
-private:
-    std::map<order_key, order_amount, buy_cmp> buy_list;
-    std::map<order_key, order_amount, sell_cmp> sell_list;
-public:
-    bool insert_buy_order(order_key&, order_amount&);
-    bool insert_sell_order(order_key&, order_amount&);
-};
-
 class orderbook_cli{
 private:
     //side = true if an order to insert is a buy order
@@ -66,4 +58,23 @@ public:
 
     bool read_side();
     std::pair<order_key, order_amount> read_order_model();
+
+    // base_currency = true if the target currency is UAH
+    //side = true if the balance change is positive
+    void print_changes(uint64_t user_id, uint64_t amount, bool base_currency, bool side);
+};
+
+class orderbook{
+private:
+    std::map<order_key, order_amount, buy_cmp> buy_list;
+    std::map<order_key, order_amount, sell_cmp> sell_list;
+
+    orderbook_cli cli;
+public:
+    // bool insert_buy_order(order_key&, order_amount&);
+    // bool insert_sell_order(order_key&, order_amount&);
+    bool insert_buy_order(std::pair<order_key, order_amount>&);
+    bool insert_sell_order(std::pair<order_key, order_amount>&);
+
+    bool insert_via_cli(std::string);
 };

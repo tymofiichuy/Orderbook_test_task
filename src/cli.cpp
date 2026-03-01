@@ -33,3 +33,13 @@ bool orderbook_cli::read_side(){
     }
     return (container[3].compare("true")==0);
 };
+
+void orderbook_cli::print_changes(uint64_t user_id, uint64_t amount, bool base_currency, bool side){
+    cout << R"(BalanceChange{user_id )" 
+         << user_id 
+         << R"(, value )" 
+         << (side ? "" : "-")
+         << amount 
+         << R"(, currency )" 
+         << (base_currency ? R"(UAH})" : R"(USD})");
+}
