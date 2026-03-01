@@ -3,7 +3,11 @@
 #include <iostream>
 #include <map>
 #include <ctime>
-// #include <regex>
+#include <string>
+#include <regex>
+#include <sstream>
+#include <vector>
+#include <utility>
 
 class order_key{
 private:
@@ -21,11 +25,11 @@ public:
 };
 
 struct buy_cmp{
-    bool operator()(order_key& l, order_key& r) const;
+    bool operator()(const order_key& l,const order_key& r) const;
 };
 
 struct sell_cmp{
-    bool operator()(order_key& l, order_key& r) const;
+    bool operator()(const order_key& l,const order_key& r) const;
 };
 
 class order_amount{
@@ -46,4 +50,20 @@ private:
 public:
     bool insert_buy_order(order_key&, order_amount&);
     bool insert_sell_order(order_key&, order_amount&);
+};
+
+class orderbook_cli{
+private:
+    //side = true if an order to insert is a buy order
+    std::regex main_pattern{R"(^Order\{user_id 0x[a-fA-F0-9]{1,16}, amount 0x[a-fA-F0-9]{1,16}, price 0x[a-fA-F0-9]{1,16}, side (buy|sell)\}$)"};
+    std::regex extraction_pattern{R"(0x[a-fA-F0-9]{1,16}|buy|sell)"};
+
+    std::vector<std::string> container;
+    
+    bool init = false;
+public:
+    bool tokenize(std::string);
+
+    bool read_side();
+    std::pair<order_key, order_amount> read_order_model();
 };

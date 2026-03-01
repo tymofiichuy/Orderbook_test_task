@@ -22,7 +22,7 @@ bool order_key::sell_match(const order_key& cmp){
     return price_ < cmp.get_price();
 }
 
-bool buy_cmp::operator()(order_key& l, order_key& r) const{
+bool buy_cmp::operator()(const order_key& l,const order_key& r) const{
     if(l.get_price() == r.get_price()){
         return l.get_timestamp() < r.get_timestamp();
     }
@@ -31,7 +31,7 @@ bool buy_cmp::operator()(order_key& l, order_key& r) const{
     }
 }
 
-bool sell_cmp::operator()(order_key& l, order_key& r) const{
+bool sell_cmp::operator()(const order_key& l,const order_key& r) const{
     if(l.get_price() == r.get_price()){
         return l.get_timestamp() < r.get_timestamp();
     }
