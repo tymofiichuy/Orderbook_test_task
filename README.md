@@ -10,7 +10,7 @@ Also, the project includes simple command line interface to interact with the un
 
 
 ## Main logic
-Implementation relies on stl::map data structure (which is based on a red-black tree). Therefore, an orderbook reqires O(n) memory and implements an order insertion in O(log n) time and matching in O(1) amortized time. While logarithmic-time 
+Implementation relies on stl::map data structure (which is based on a red-black tree). Therefore, an orderbook reqires O(n) memory and implements an order insertion in O(log n) time and matching in O(logn) amortized time. While logarithmic-time 
 insertion is costly, it is necessary to store orders in an ordered structure and avoid expensive matching.
 
 
